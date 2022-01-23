@@ -1,13 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-// import Script from 'next/script'
-
-//import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-//import '../styles/globals.css'
 const Home: NextPage = () => {
-  console.log('w',styles.title);
   return (
     <div className={styles.container}>
       <Head>
@@ -16,69 +11,44 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       
       </Head>
-      {/* <Script
-        src="https://connect.facebook.net/en_US/sdk.js"
-        strategy="lazyOnload"
-        onLoad={() =>
-          console.log('eee',`script loaded correctly, window.FB has been populated`)
-        }
-      /> */}
       <main className={styles.main}>
-      <h1 className="title">
-        Read{' '}
-        <Link href="/posts/first-post">
-          <a>this page!</a>
-        </Link>
-      </h1>
 
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to the admin platform
         </h1>
 
-        <p className="text-red-700 py-8">
+        {/* <p className="text-red-700 py-8">
           Get started by editing{' '}
           <code className={styles.code}>pages/index.tsx</code>
-        </p>
+        </p> */}
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
+        <Link href="/products/atribute">
+          <a className={styles.card}>
+            <h2 >atributes &rarr;</h2>
           </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
+        </Link>
+        <Link href="/products/product_type">
+          <a className={styles.card}>
+            <h2>product_types &rarr;</h2>
           </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
+        </Link>
+        <Link href="/products/product">
+          <a className={styles.card}>
+            <h2>products &rarr;</h2>
           </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        </Link>
         </div>
       </main>
 
       <footer className={styles.footer}>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://www.linkedin.com/in/walid-hanniche/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-purple-900 py-2"
         >
-          Powered by{' '}
+          Powered by W {' '}
           {/*<span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
   </span>*/}

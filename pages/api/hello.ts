@@ -41,10 +41,12 @@ type Data = {
   name: string
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<any>
 ) {
-  models.AttributeModel.create({name:'expiry date2'+Math.random(),type:'DATE'});
-  res.status(200).json({ name: 'John Doe db2' })
+  //models.AttributeModel.create({name:'expiry date2'+Math.random(),type:'DATE'});
+  let att= await models.AttributeModel.find({}).exec();
+  await models.AssignedAttributeModel.create({attribute:att[0]._id,attributeValue:new Date()});
+  res.status(200).json(att)
 }

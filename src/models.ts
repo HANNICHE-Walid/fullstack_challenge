@@ -37,7 +37,6 @@ const assignedAttributeSchema = new Schema({
   attribute: {
     type: Schema.Types.ObjectId,
     ref: "Attribute",
-    required: true,
   },
   attributeValue: {
     type: Schema.Types.Mixed,
@@ -55,7 +54,6 @@ const productTypeSchema = new Schema(
       items: {
         type: Schema.Types.ObjectId,
         ref: "Attribute",
-        required: true,
       },
     },
   },
@@ -79,7 +77,6 @@ const productSchema = new Schema(
       items: {
         type: Schema.Types.ObjectId,
         ref: "AssignedAttribute",
-        required: true,
       },
     },
   },
