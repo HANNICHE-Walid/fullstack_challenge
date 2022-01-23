@@ -5,8 +5,10 @@
   
 ## Getting Started
 
-First, run the development server:
 
+note : edit the `.env` file if your mongo settings are different than the default
+
+First, run the development server:
 ```bash
 npm run dev
 # or

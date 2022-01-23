@@ -1,0 +1,50 @@
+Full Stack Coding Challenge
+
+The Challenge:
+We want to create a small service for product management (frontend and a small supporting backend)
+The frontend: can be either a SPA or react native app
+For the backend, we should be able to create and update a product via the restAPI.
+
+Lest go through the models:
+    ProductType
+        id
+        Name
+        Created_at
+        Attributes[]
+
+    Product
+        Id
+        Name
+        Created_at
+        productType
+        AssignedAttributes[]
+
+    Attribute
+        Id
+        Name
+        Type // can be text boolean date selecte or multiselect
+        
+    AssignedAttribute
+        Id
+        Attribute
+        AttributeValue
+
+    AttributeValue
+        Id
+        Name // can be used for text, select and multiselect
+        Boolean // used to store value for attributed of type boolean
+        Date // usedd to store value for attribute of value date
+
+The test has many parts we want to try your best to finish all the parts but it’s not
+required
+
+First part:
+Implement the rest API for creating and updating products type and product
+
+Second part:
+Build a simple SPA or a react native app that allow us to list create and update the
+product and product type
+
+Third part:
+Do you think with this modeling we can handle all edge cases, if not please
+suggest a better solution
