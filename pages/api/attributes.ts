@@ -8,9 +8,24 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   switch (req.method) {
-    case "POST":
-      await models.AttributeModel.create(req.body);
+    case "DELETE":
+      await models.AttributeModel.deleteMany({});
       res.status(200).json({ message: "success" });
+      break;
+    case "POST":
+      if (req.query.random) {
+        for (let i = 0; i < 30; i++) {
+          await models.AttributeModel.create({
+            name: "rand" + Math.random(),
+            type: models.attributeTypes[Math.round(Math.random() * 3)],
+          });
+        }
+        res.status(200).json({ message: "success" });
+      } else {
+        Math.round(Math.random() * 3);
+        await models.AttributeModel.create(req.body);
+        res.status(200).json({ message: "success" });
+      }
       break;
     case "GET":
       if (req.query.count) {

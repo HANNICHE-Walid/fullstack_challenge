@@ -12,10 +12,12 @@ const Home: NextPage = () => {
     ptype: false,
   });
   useEffect(() => {
-    const init=async () => {
+    const init = async () => {
       try {
-        const res1 = await API.get("/attributes",{params:{count:true}});
-        const res2 = await API.get("/product_types",{params:{count:true}});
+        const res1 = await API.get("/attributes", { params: { count: true } });
+        const res2 = await API.get("/product_types", {
+          params: { count: true },
+        });
         // console.log(res1.data);
         // console.log(res2.data);
         setAvialableData({
@@ -25,7 +27,7 @@ const Home: NextPage = () => {
       } catch (err) {
         console.log(err);
       }
-    }
+    };
     init();
   }, []);
   return (
@@ -46,26 +48,36 @@ const Home: NextPage = () => {
         <div className={styles.grid}>
           <Link href="/products/attribute">
             <a className={styles.card}>
-              <h2>attributes &rarr;</h2>
-            </a>
-          </Link>
-          <Link href="/products/product_type">
-            <a className={styles.card}>
-              <h2>product_types &rarr;</h2>
+              <h2>Attributes &rarr;</h2>
             </a>
           </Link>
 
-          <Button title="qsd" className={styles.card}>
-            <Link href="/products/product">
-              <h2>bbb &rarr;</h2>
+          <Button
+            title={AvialableData.attrib ? undefined : "Create Attributes first"}
+            disabled={!AvialableData.attrib}
+            className={styles.card}
+          >
+            <Link href="/products/product_type">
+              <h2>Product types &rarr;</h2>
             </Link>
           </Button>
-
-          <Link href="/products/product">
+          {/* <Link href="/products/product_type">
             <a className={styles.card}>
-              <h2>products &rarr;</h2>
+              <h2>Product types &rarr;</h2>
             </a>
-          </Link>
+          </Link> */}
+
+          <Button
+            title={
+              AvialableData.ptype ? undefined : "Create product type first"
+            }
+            disabled={!AvialableData.ptype}
+            className={styles.card}
+          >
+            <Link href="/products/product">
+              <h2>Products &rarr;</h2>
+            </Link>
+          </Button>
         </div>
       </main>
 

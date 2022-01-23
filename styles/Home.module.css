@@ -97,6 +97,7 @@
 .card:disabled:active {
   color: #f30000;
   border-color: #f30000;
+  cursor: not-allowed;
 }
 .card h2 {
   margin: 0 0 1rem 0;

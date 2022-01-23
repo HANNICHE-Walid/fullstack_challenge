@@ -1,5 +1,7 @@
 import { model, Document, Schema } from "mongoose";
 import mongoose from "mongoose";
+
+export const attributeTypes = ["DATE", "BOOL", "STRING"];
 //interfaces
 export interface Attribute extends Document {
   name: string;
@@ -24,7 +26,7 @@ const attributeSchema = new Schema({
   type: {
     type: Schema.Types.String,
     required: true,
-    enum: ["DATE", "BOOL", "STRING"],
+    enum: attributeTypes,
   },
 
   name: {
