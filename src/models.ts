@@ -85,7 +85,6 @@ const productSchema = new Schema(
   }
 );
 
-
 //models
 export const AttributeModel =
   mongoose.models.Attribute ||

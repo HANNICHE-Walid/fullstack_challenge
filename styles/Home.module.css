@@ -74,7 +74,7 @@
   max-width: 800px;
 }
 
-.card {
+.card{
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
@@ -92,13 +92,18 @@
   color: #0070f3;
   border-color: #0070f3;
 }
-
+.card:disabled:hover,
+.card:disabled:focus,
+.card:disabled:active {
+  color: #f30000;
+  border-color: #f30000;
+}
 .card h2 {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
 }
 
-.card p {
+.card p{
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
