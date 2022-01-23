@@ -3,6 +3,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import * as models from "../../src/models";
 import "../../src/db";
 
+const randomStr = (length = 8) => {
+  // Declare all characters
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  // Pick characers randomly
+  let str = "";
+  for (let i = 0; i < length; i++) {
+    str += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return str;
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
@@ -15,9 +27,12 @@ export default async function handler(
     case "POST":
       if (req.query.random) {
         for (let i = 0; i < 30; i++) {
+          const r = Math.random() * 3;
+          const t = models.attributeTypes[Math.floor(r)];
+          const n = "rand_" + randomStr();
           await models.AttributeModel.create({
-            name: "rand" + Math.random(),
-            type: models.attributeTypes[Math.round(Math.random() * 3)],
+            name: n,
+            type: t,
           });
         }
         res.status(200).json({ message: "success" });

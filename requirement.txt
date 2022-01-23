@@ -48,3 +48,20 @@ product and product type
 Third part:
 Do you think with this modeling we can handle all edge cases, if not please
 suggest a better solution
+
+Notes:
+As mentioned above, you are not obliged to finish all the parts but you can use
+different methods.
+
+You can use libraries and frameworks as you see fit. - You can use a starter
+projects such as
+-[create-react-app](https://github.com/facebookincubator/create-react-app). -
+-[expo](https://expo.dev). -
+
+Commit all changes to a Git repository and follow
+- Visual appearance isn't important but your solution needs to work on small and
+large screens.
+- Make sure there's a README with instructions on how to build and run the
+application.
+- When you're done, send us a link to the Git repo. We will then review your
+submission
