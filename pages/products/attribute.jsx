@@ -215,6 +215,7 @@ export default function Page() {
               accepter={SelectPicker}
               data={attributeTypes}
               searchable={false}
+              block
             />
             <InputField name="name" label="Name :" />
           </Form>

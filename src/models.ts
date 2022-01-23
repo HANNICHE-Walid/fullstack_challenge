@@ -52,11 +52,12 @@ const productTypeSchema = new Schema(
       required: true,
     },
     attributes: {
-      type: Schema.Types.Array,
-      items: {
-        type: Schema.Types.ObjectId,
-        ref: "Attribute",
-      },
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Attribute",
+        },
+      ],
     },
   },
   {
@@ -75,11 +76,12 @@ const productSchema = new Schema(
       ref: "ProductType",
     },
     assignedAttributes: {
-      type: Schema.Types.Array,
-      items: {
-        type: Schema.Types.ObjectId,
-        ref: "AssignedAttribute",
-      },
+      type:[
+        {
+          type: Schema.Types.ObjectId,
+          ref: "AssignedAttribute",
+        },
+      ],
     },
   },
   {

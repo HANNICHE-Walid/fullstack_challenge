@@ -10,14 +10,9 @@ import {
   Modal,
   Form,
   Schema,
-  SelectPicker,
+  TagPicker,
   Pagination,
 } from "rsuite";
-
-const attributeTypes = ["DATE", "BOOL", "STRING"].map((a) => ({
-  value: a,
-  label: a,
-}));
 
 const InputField = React.forwardRef((props, ref) => {
   const { name, label, accepter, ...rest } = props;
@@ -40,13 +35,13 @@ export default function Page() {
   const [formError, setFormError] = React.useState({});
   const [formValue, setFormValue] = React.useState({
     name: null,
-    type: null,
+    attributes: [],
   });
 
-  const { StringType } = Schema.Types;
+  const { StringType, ArrayType } = Schema.Types;
   const model = Schema.Model({
     name: StringType().isRequired("This field is required."),
-    type: StringType().isRequired("This field is required."),
+    attributes: ArrayType().minLength(1, "Choose at least one"),
   });
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -62,8 +57,9 @@ export default function Page() {
       return;
     }
     try {
-      const res1 = await API.post("/attributes", formValue);
-      updateList();
+      const res1 = await API.post("/product_types", formValue);
+
+      updatePTypeList();
 
       handleClose();
     } catch (err) {
@@ -72,6 +68,7 @@ export default function Page() {
   };
 
   const [AtributeList, setAtributeList] = useState([]);
+  const [ProductTypeList, setProductTypeList] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
@@ -80,7 +77,7 @@ export default function Page() {
     setLimit(dataKey);
   };
 
-  const data = AtributeList.filter((v, i) => {
+  const data = ProductTypeList.filter((v, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
     return i >= start && i < end;
@@ -96,8 +93,18 @@ export default function Page() {
       //console.log(err);
     }
   };
+  const updatePTypeList = async () => {
+    try {
+      const res = await API.get("/product_types");
+      console.log(res.data);
+      setProductTypeList(res.data);
+    } catch (err) {
+      //console.log(err);
+    }
+  };
   useEffect(() => {
     updateList();
+    updatePTypeList();
   }, []);
 
   return (
@@ -116,33 +123,14 @@ export default function Page() {
           Create attribute
         </Button>
         <Button
-          appearance="primary"
-          onClick={() => {
-            const rdc = async () => {
-              try {
-                const res1 = await API.post("/attributes", null, {
-                  params: { random: true },
-                });
-                //console.log(res1.data);
-                updateList();
-              } catch (err) {
-                console.log(err);
-              }
-            };
-            rdc();
-          }}
-        >
-          create 30
-        </Button>
-
-        <Button
           color="red"
           appearance="primary"
           onClick={() => {
             const dac = async () => {
               try {
-                const res1 = await API.delete("/attributes");
-                updateList();
+                const res1 = await API.delete("/product_types");
+
+                updatePTypeList();
               } catch (err) {
                 console.log(err);
               }
@@ -154,17 +142,19 @@ export default function Page() {
         </Button>
       </ButtonToolbar>
       <br />
+      <br />
       <Table
-        //height={400}
         className="mx-4"
-        data={data}
-        autoHeight
+        //height={600}
         bordered
-        // onRowClick={data => {
-        //   console.log(data);
-        // }}
+        data={data.map((p) => ({
+          ...p,
+          children: p.attributes.map((a) => ({ ...a, _id: p._id + a._id })),
+        }))}
+        isTree
+        rowKey="_id"
       >
-        <Column flexGrow={3} align="center" fixed>
+        <Column flexGrow={3} fixed>
           <HeaderCell>Name</HeaderCell>
           <Cell dataKey="name" />
         </Column>
@@ -174,6 +164,8 @@ export default function Page() {
           <Cell dataKey="type" />
         </Column>
       </Table>
+
+      <br />
       <div style={{ padding: 20 }} className="float-right">
         <Pagination
           prev
@@ -185,7 +177,7 @@ export default function Page() {
           maxButtons={5}
           size="xs"
           layout={["limit", "|", "pager", "skip"]}
-          total={AtributeList.length}
+          total={ProductTypeList.length}
           limitOptions={[5, 10, 20, 50]}
           limit={limit}
           activePage={page}
@@ -210,11 +202,17 @@ export default function Page() {
             model={model}
           >
             <InputField
-              name="type"
-              label="Type :"
-              accepter={SelectPicker}
-              data={attributeTypes}
-              searchable={false}
+              name="attributes"
+              label="Attributes :"
+              accepter={TagPicker}
+              data={AtributeList.map((a) => ({
+                value: a._id,
+                label: a.name,
+                type: a.type,
+              }))}
+              searchable={true}
+              groupBy="type"
+              block
             />
             <InputField name="name" label="Name :" />
           </Form>
