@@ -13,8 +13,15 @@ export default async function handler(
       res.status(200).json({ message: "success" });
       break;
     case "GET":
-      let att = await models.AttributeModel.find({}).exec();
-      res.status(200).json(att);
+      if (req.query.count) {
+        let count = await models.AttributeModel.count({}).exec();
+        res.status(200).json(count);
+      } else {
+        let attrib = await models.AttributeModel.find({}).exec();
+        res.status(200).json(attrib);
+      }
+      break;
+    default:
+      res.status(400).json({ message: "unkwon method" });
   }
-  res.status(400).json({ message: "unkwon method" });
 }

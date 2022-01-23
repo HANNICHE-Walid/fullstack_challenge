@@ -3,7 +3,31 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { Button } from "rsuite";
+import API from "../src/api";
+import { useEffect, useState } from "react";
+
 const Home: NextPage = () => {
+  const [AvialableData, setAvialableData] = useState({
+    attrib: false,
+    ptype: false,
+  });
+  useEffect(() => {
+    const init=async () => {
+      try {
+        const res1 = await API.get("/attributes",{params:{count:true}});
+        const res2 = await API.get("/product_types",{params:{count:true}});
+        // console.log(res1.data);
+        // console.log(res2.data);
+        setAvialableData({
+          attrib: res1.data,
+          ptype: res2.data,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    init();
+  }, []);
   return (
     <div className={styles.container}>
       <Head>

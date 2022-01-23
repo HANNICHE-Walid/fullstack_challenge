@@ -13,8 +13,15 @@ export default async function handler(
       res.status(200).json({ message: "success" });
       break;
     case "GET":
-      let att = await models.ProductTypeModel.find({}).exec();
-      res.status(200).json(att);
+      if (req.query.count) {
+        let count = await models.ProductTypeModel.count({}).exec();
+        res.status(200).json(count);
+      } else {
+        let ptype = await models.ProductTypeModel.find({}).exec();
+        res.status(200).json(ptype);
+      }
+      break;
+    default:
+      res.status(400).json({ message: "unkwon method" });
   }
-  res.status(400).json({ message: "unkwon method" });
 }

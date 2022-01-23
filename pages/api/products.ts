@@ -13,7 +13,10 @@ export default async function handler(
       res.status(200).json({ message: "success" });
       break;
     case "GET":
-      let att = await models.ProductModel.find({}).exec();
-      res.status(200).json(att);
+      let prod = await models.ProductModel.find({}).exec();
+      res.status(200).json(prod);
+      break;
+    default:
+      res.status(400).json({ message: "unkwon method" });
   }
 }
