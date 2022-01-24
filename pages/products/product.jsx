@@ -443,7 +443,7 @@ export default function Page() {
             onClick={() => {
               handleSubmit(open.id);
             }}
-            disabled={!SelectedType || (open.id&&!EditType)}
+            disabled={(!open.id&&!SelectedType )|| (open.id&&!EditType)}
             loading={DataLoading}
           >
             Submit
