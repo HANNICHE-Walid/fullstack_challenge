@@ -30,7 +30,7 @@ const InputField = React.forwardRef((props, ref) => {
   );
 });
 
-InputField.displayName ='InputField';
+InputField.displayName = "InputField";
 
 export default function Page() {
   const [DataLoading, setDataLoading] = useState(false);
@@ -132,7 +132,11 @@ export default function Page() {
       <h1>Product types</h1>
       <ButtonToolbar className="mx-2">
         <Button
-          loading={DataLoading} color="green" appearance="primary" onClick={handleOpen}>
+          loading={DataLoading}
+          color="green"
+          appearance="primary"
+          onClick={handleOpen}
+        >
           Create product type
         </Button>
         <Button

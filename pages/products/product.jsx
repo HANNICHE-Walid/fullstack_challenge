@@ -33,7 +33,7 @@ const InputField = React.forwardRef((props, ref) => {
   );
 });
 
-InputField.displayName ='InputField';
+InputField.displayName = "InputField";
 let ptypeMap = {};
 let attribMap = {};
 let model = { name: StringType().isRequired("This field is required.") };

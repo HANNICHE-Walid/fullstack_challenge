@@ -34,7 +34,7 @@ const InputField = React.forwardRef((props, ref) => {
     </Form.Group>
   );
 });
-InputField.displayName ='InputField';
+InputField.displayName = "InputField";
 export default function Page() {
   const [DataLoading, setDataLoading] = useState(false);
 
