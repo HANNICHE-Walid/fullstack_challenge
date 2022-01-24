@@ -41,7 +41,7 @@ let attribMap = {};
 let model = { name: StringType().isRequired("This field is required.") };
 
 export default function Page() {
-  const [DataLoading, setDataLoading] = useState(false);
+  const [DataLoading, setDataLoading] = useState(true);
 
   const formRef = React.useRef();
   const [formError, setFormError] = React.useState({});
