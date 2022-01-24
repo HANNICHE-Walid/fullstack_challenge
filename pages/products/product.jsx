@@ -322,7 +322,7 @@ export default function Page() {
                         setFormValue(fv);
                         handleOpen({ id: data._id });
                       }}
-                      icon={<Icon icon="cbx:bxs-edit" />}
+                      icon={<Icon icon="carbon:view-filled" />}
                     />
                   );
                 }
@@ -416,6 +416,7 @@ export default function Page() {
                           ref={formRef}
                           accepter={Toggle}
                           name={a.name}
+                          defaultChecked={formValue[a.name]}
                           size="sm"
                           label={a.name + " :"}
                         />
@@ -442,7 +443,7 @@ export default function Page() {
             onClick={() => {
               handleSubmit(open.id);
             }}
-            disabled={!(SelectedType || EditType)}
+            disabled={!SelectedType || (open.id&&!EditType)}
             loading={DataLoading}
           >
             Submit
