@@ -127,106 +127,107 @@ export default function Page() {
         <title>Product types</title>
       </Head>
 
-      <div className={s.nav}>
-        <div className="flex items-center flex-1">
-          <Link href="/">
-            <span className={s.logo + " py-2 mx-4 px-4"}>
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                width={72}
-                height={16}
-              />
-            </span>
-          </Link>
+      <div className="h-screen">
+        <div className={s.nav}>
+          <div className="flex items-center flex-1">
+            <Link href="/">
+              <span className={s.logo + " py-2 mx-4 px-4"}>
+                <Image
+                  src="/vercel.svg"
+                  alt="Vercel Logo"
+                  width={72}
+                  height={16}
+                />
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        <h1>Product types</h1>
+        <ButtonToolbar className="mx-2">
+          <Button
+            loading={DataLoading}
+            color="green"
+            appearance="primary"
+            onClick={handleOpen}
+          >
+            Create product type
+          </Button>
+          <Button
+            loading={DataLoading}
+            color="red"
+            appearance="primary"
+            onClick={() => {
+              const dac = async () => {
+                setDataLoading(!false);
+                try {
+                  const res1 = await API.delete("/product_types");
+
+                  updatePTypeList();
+                  setDataLoading(false);
+                } catch (err) {
+                  setDataLoading(false);
+                  console.log(err);
+                }
+              };
+              dac();
+            }}
+          >
+            delete all
+          </Button>
+        </ButtonToolbar>
+        <br />
+        <br />
+        <Table
+          className="mx-4 bg-white"
+          loading={DataLoading}
+          // height={500}
+          bordered
+          data={data.map((p) => ({
+            ...p,
+            children: p.attributes.map((a) => ({ ...a, _id: p._id + a._id })),
+          }))}
+          isTree
+          rowKey="_id"
+          cellBordered
+        >
+          <Column flexGrow={2} fixed>
+            <HeaderCell>Name</HeaderCell>
+            <Cell dataKey="name" />
+          </Column>
+
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Date</HeaderCell>
+            <Cell dataKey="createdAt" />
+          </Column>
+
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Type</HeaderCell>
+            <Cell dataKey="type" />
+          </Column>
+        </Table>
+
+        <br />
+        <div style={{ padding: 20 }} className="float-right">
+          <Pagination
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="xs"
+            layout={["limit", "|", "pager", "skip"]}
+            total={ProductTypeList.length}
+            limitOptions={[5, 10, 20, 50]}
+            limit={limit}
+            activePage={page}
+            onChangePage={setPage}
+            onChangeLimit={handleChangeLimit}
+          />
         </div>
       </div>
-
-      <h1>Product types</h1>
-      <ButtonToolbar className="mx-2">
-        <Button
-          loading={DataLoading}
-          color="green"
-          appearance="primary"
-          onClick={handleOpen}
-        >
-          Create product type
-        </Button>
-        <Button
-          loading={DataLoading}
-          color="red"
-          appearance="primary"
-          onClick={() => {
-            const dac = async () => {
-              setDataLoading(!false);
-              try {
-                const res1 = await API.delete("/product_types");
-
-                updatePTypeList();
-                setDataLoading(false);
-              } catch (err) {
-                setDataLoading(false);
-                console.log(err);
-              }
-            };
-            dac();
-          }}
-        >
-          delete all
-        </Button>
-      </ButtonToolbar>
-      <br />
-      <br />
-      <Table
-        className="mx-4 bg-white"
-        loading={DataLoading}
-        // height={500}
-        bordered
-        data={data.map((p) => ({
-          ...p,
-          children: p.attributes.map((a) => ({ ...a, _id: p._id + a._id })),
-        }))}
-        isTree
-        rowKey="_id"
-        cellBordered
-      >
-        <Column flexGrow={2} fixed>
-          <HeaderCell>Name</HeaderCell>
-          <Cell dataKey="name" />
-        </Column>
-
-        <Column flexGrow={1} align="center" fixed>
-          <HeaderCell>Date</HeaderCell>
-          <Cell dataKey="createdAt" />
-        </Column>
-
-        <Column flexGrow={1} align="center" fixed>
-          <HeaderCell>Type</HeaderCell>
-          <Cell dataKey="type" />
-        </Column>
-      </Table>
-
-      <br />
-      <div style={{ padding: 20 }} className="float-right">
-        <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          maxButtons={5}
-          size="xs"
-          layout={["limit", "|", "pager", "skip"]}
-          total={ProductTypeList.length}
-          limitOptions={[5, 10, 20, 50]}
-          limit={limit}
-          activePage={page}
-          onChangePage={setPage}
-          onChangeLimit={handleChangeLimit}
-        />
-      </div>
-
       <Modal open={open} size={"sm"} onClose={handleClose}>
         <Modal.Header>
           <Modal.Title className="text-xl text-cla-blue text-center font-semibold mb-4">

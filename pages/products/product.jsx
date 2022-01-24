@@ -48,8 +48,8 @@ export default function Page() {
   const [formValue, setFormValue] = React.useState({});
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
+  const handleOpen = (op = true) => {
+    setOpen(op);
   };
   const handleClose = () => {
     setOpen(false);
@@ -175,121 +175,122 @@ export default function Page() {
         <title>Products</title>
       </Head>
 
-      <div className={s.nav}>
-        <div className="flex items-center flex-1">
-          <Link href="/">
-            <span className={s.logo + " py-2 mx-4 px-4"}>
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                width={72}
-                height={16}
-              />
-            </span>
-          </Link>
+      <div className="h-screen">
+        <div className={s.nav}>
+          <div className="flex items-center flex-1">
+            <Link href="/">
+              <span className={s.logo + " py-2 mx-4 px-4"}>
+                <Image
+                  src="/vercel.svg"
+                  alt="Vercel Logo"
+                  width={72}
+                  height={16}
+                />
+              </span>
+            </Link>
+          </div>
         </div>
-      </div>
 
-      <h1>Products</h1>
-      <ButtonToolbar className="mx-2">
-        <Button color="green" appearance="primary" onClick={handleOpen}>
-          Create Product
-        </Button>
-        <Button
-          color="red"
-          appearance="primary"
-          onClick={() => {
-            const dac = async () => {
-              setDataLoading(true);
-              try {
-                const res1 = await API.delete("/products");
-                updateList();
-              } catch (err) {
+        <h1>Products</h1>
+        <ButtonToolbar className="mx-2">
+          <Button color="green" appearance="primary" onClick={handleOpen}>
+            Create Product
+          </Button>
+          <Button
+            color="red"
+            appearance="primary"
+            onClick={() => {
+              const dac = async () => {
+                setDataLoading(true);
+                try {
+                  const res1 = await API.delete("/products");
+                  updateList();
+                } catch (err) {
+                  setDataLoading(false);
+                  //console.log(err);
+                }
                 setDataLoading(false);
-                //console.log(err);
+              };
+              dac();
+            }}
+          >
+            delete all
+          </Button>
+        </ButtonToolbar>
+        <br />
+        <br />
+        <Table
+          autoHeight
+          className="mx-4  bg-white"
+          loading={DataLoading}
+          cellBordered
+          // height={500}
+          bordered
+          data={data.map((p) => ({
+            ...p,
+            children: p.assignedAttributes.map((a) => {
+              let v = a.attributeValue;
+              switch (a.attribute.type) {
+                case "BOOL":
+                  v = v ? "True" : "False";
+                  break;
+                case "DATE":
+                  v = new Date(v).toLocaleDateString();
+                  break;
+                default:
+                  break;
               }
-              setDataLoading(false);
-            };
-            dac();
+              return {
+                ...a,
+                name: a.attribute.name,
+                value: v,
+                //type:a.attribute.type
+              };
+            }),
+          }))}
+          isTree
+          rowKey="_id"
+          onRowClick={(data) => {
+            console.log(data);
           }}
         >
-          delete all
-        </Button>
-      </ButtonToolbar>
-      <br />
-      <br />
-      <Table
-        autoHeight
-        className="mx-4  bg-white"
-        loading={DataLoading}
-        cellBordered
-        // height={500}
-        bordered
-        data={data.map((p) => ({
-          ...p,
-          children: p.assignedAttributes.map((a) => {
-            let v = a.attributeValue;
-            switch (a.attribute.type) {
-              case "BOOL":
-                v = v ? "True" : "False";
-                break;
-              case "DATE":
-                v = new Date(v).toLocaleDateString();
-                break;
-              default:
-                break;
-            }
-            return {
-              ...a,
-              name: a.attribute.name,
-              value: v,
-              //type:a.attribute.type
-            };
-          }),
-        }))}
-        isTree
-        rowKey="_id"
-        onRowClick={(data) => {
-          console.log(data);
-        }}
-      >
-        <Column flexGrow={2} fixed>
-          <HeaderCell>Name</HeaderCell>
-          <Cell dataKey="name" />
-        </Column>
+          <Column flexGrow={2} fixed>
+            <HeaderCell>Name</HeaderCell>
+            <Cell dataKey="name" />
+          </Column>
 
-        <Column flexGrow={1} align="center" fixed>
-          <HeaderCell>Type</HeaderCell>
-          <Cell dataKey="productType.name" />
-        </Column>
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Type</HeaderCell>
+            <Cell dataKey="productType.name" />
+          </Column>
 
-        <Column flexGrow={1} align="center" fixed>
-          <HeaderCell>Value</HeaderCell>
-          <Cell dataKey="value" />
-        </Column>
-      </Table>
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Value</HeaderCell>
+            <Cell dataKey="value" />
+          </Column>
+        </Table>
 
-      <br />
-      <div style={{ padding: 20 }} className="float-right">
-        <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          maxButtons={5}
-          size="xs"
-          layout={["limit", "|", "pager", "skip"]}
-          total={ProductTypeList.length}
-          limitOptions={[5, 10, 20, 50]}
-          limit={limit}
-          activePage={page}
-          onChangePage={setPage}
-          onChangeLimit={handleChangeLimit}
-        />
+        <br />
+        <div style={{ padding: 20 }} className="float-right">
+          <Pagination
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="xs"
+            layout={["limit", "|", "pager", "skip"]}
+            total={ProductTypeList.length}
+            limitOptions={[5, 10, 20, 50]}
+            limit={limit}
+            activePage={page}
+            onChangePage={setPage}
+            onChangeLimit={handleChangeLimit}
+          />
+        </div>
       </div>
-
       <Modal open={open} size={"sm"} onClose={handleClose}>
         <Modal.Header>
           <Modal.Title className="text-xl text-cla-blue text-center font-semibold mb-4">

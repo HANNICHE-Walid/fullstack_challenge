@@ -132,102 +132,103 @@ export default function Page() {
         </div>
       </div>
 
-      <h1>Attributes</h1>
-      <ButtonToolbar className="mx-2">
-        <Button
-          loading={DataLoading}
-          color="green"
-          appearance="primary"
-          onClick={handleOpen}
-        >
-          Create attribute
-        </Button>
-        <Button
-          appearance="primary"
-          loading={DataLoading}
-          onClick={() => {
-            const rdc = async () => {
-              setDataLoading(!false);
-              try {
-                const res1 = await API.post("/attributes", null, {
-                  params: { random: true },
-                });
-                //console.log(res1.data);
-                updateList();
-              } catch (err) {
-                console.log(err);
+      <div className="h-screen">
+        <h1>Attributes</h1>
+        <ButtonToolbar className="mx-2">
+          <Button
+            loading={DataLoading}
+            color="green"
+            appearance="primary"
+            onClick={handleOpen}
+          >
+            Create attribute
+          </Button>
+          <Button
+            appearance="primary"
+            loading={DataLoading}
+            onClick={() => {
+              const rdc = async () => {
+                setDataLoading(!false);
+                try {
+                  const res1 = await API.post("/attributes", null, {
+                    params: { random: true },
+                  });
+                  //console.log(res1.data);
+                  updateList();
+                } catch (err) {
+                  console.log(err);
+                  setDataLoading(false);
+                }
                 setDataLoading(false);
-              }
-              setDataLoading(false);
-            };
-            rdc();
-          }}
-        >
-          create 30
-        </Button>
+              };
+              rdc();
+            }}
+          >
+            create 30
+          </Button>
 
-        <Button
-          color="red"
-          loading={DataLoading}
-          appearance="primary"
-          onClick={() => {
-            const dac = async () => {
-              setDataLoading(!false);
-              try {
-                const res1 = await API.delete("/attributes");
-                updateList();
-              } catch (err) {
-                console.log(err);
+          <Button
+            color="red"
+            loading={DataLoading}
+            appearance="primary"
+            onClick={() => {
+              const dac = async () => {
+                setDataLoading(!false);
+                try {
+                  const res1 = await API.delete("/attributes");
+                  updateList();
+                } catch (err) {
+                  console.log(err);
+                  setDataLoading(false);
+                }
                 setDataLoading(false);
-              }
-              setDataLoading(false);
-            };
-            dac();
-          }}
+              };
+              dac();
+            }}
+          >
+            delete all
+          </Button>
+        </ButtonToolbar>
+        <br />
+        <Table
+          //height={400}
+          className="mx-4 bg-white"
+          data={data}
+          autoHeight
+          bordered
+          loading={DataLoading}
+          cellBordered
         >
-          delete all
-        </Button>
-      </ButtonToolbar>
-      <br />
-      <Table
-        //height={400}
-        className="mx-4 bg-white"
-        data={data}
-        autoHeight
-        bordered
-        loading={DataLoading}
-        cellBordered
-      >
-        <Column flexGrow={3} align="center" fixed>
-          <HeaderCell>Name</HeaderCell>
-          <Cell dataKey="name" />
-        </Column>
+          <Column flexGrow={3} align="center" fixed>
+            <HeaderCell>Name</HeaderCell>
+            <Cell dataKey="name" />
+          </Column>
 
-        <Column flexGrow={1} align="center" fixed>
-          <HeaderCell>Type</HeaderCell>
-          <Cell dataKey="type" />
-        </Column>
-      </Table>
-      <div style={{ padding: 20 }} className="float-right">
-        <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          maxButtons={5}
-          size="xs"
-          layout={["limit", "|", "pager", "skip"]}
-          total={AtributeList.length}
-          limitOptions={[5, 10, 20, 50]}
-          limit={limit}
-          activePage={page}
-          onChangePage={setPage}
-          onChangeLimit={handleChangeLimit}
-        />
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Type</HeaderCell>
+            <Cell dataKey="type" />
+          </Column>
+        </Table>
+        <div style={{ padding: 20 }} className="float-right">
+          <Pagination
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="xs"
+            layout={["limit", "|", "pager", "skip"]}
+            total={AtributeList.length}
+            limitOptions={[5, 10, 20, 50]}
+            limit={limit}
+            activePage={page}
+            onChangePage={setPage}
+            onChangeLimit={handleChangeLimit}
+          />
+        </div>
       </div>
-
       <Modal open={open} size={"sm"} onClose={handleClose}>
         <Modal.Header>
           <Modal.Title className="text-xl text-cla-blue text-center font-semibold mb-4">
