@@ -11,6 +11,7 @@ const Home: NextPage = () => {
     attrib: false,
     ptype: false,
   });
+
   useEffect(() => {
     const init = async () => {
       try {
