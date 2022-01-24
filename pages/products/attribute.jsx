@@ -36,6 +36,8 @@ const InputField = React.forwardRef((props, ref) => {
 });
 
 export default function Page() {
+  const [DataLoading, setDataLoading] = useState(false);
+
   const formRef = React.useRef();
   const [formError, setFormError] = React.useState({});
   const [formValue, setFormValue] = React.useState({
@@ -61,6 +63,7 @@ export default function Page() {
       console.error("Form Error", formError);
       return;
     }
+    setDataLoading(true);
     try {
       const res1 = await API.post("/attributes", formValue);
       updateList();
@@ -68,7 +71,9 @@ export default function Page() {
       handleClose();
     } catch (err) {
       //console.error(err);
+      setDataLoading(false);
     }
+    setDataLoading(false);
   };
 
   const [AtributeList, setAtributeList] = useState([]);
@@ -88,13 +93,17 @@ export default function Page() {
   console.log(data);
 
   const updateList = async () => {
+    setDataLoading(true);
     try {
       const res = await API.get("/attributes");
       console.log(res.data);
       setAtributeList(res.data);
+      setDataLoading(false);
     } catch (err) {
       //console.log(err);
+      setDataLoading(false);
     }
+    setDataLoading(false);
   };
   useEffect(() => {
     updateList();
@@ -112,13 +121,20 @@ export default function Page() {
 
       <h1>Attributes</h1>
       <ButtonToolbar className="mx-2">
-        <Button color="green" appearance="primary" onClick={handleOpen}>
+        <Button
+          loading={DataLoading}
+          color="green"
+          appearance="primary"
+          onClick={handleOpen}
+        >
           Create attribute
         </Button>
         <Button
           appearance="primary"
+          loading={DataLoading}
           onClick={() => {
             const rdc = async () => {
+              setDataLoading(!false);
               try {
                 const res1 = await API.post("/attributes", null, {
                   params: { random: true },
@@ -127,7 +143,9 @@ export default function Page() {
                 updateList();
               } catch (err) {
                 console.log(err);
+                setDataLoading(false);
               }
+              setDataLoading(false);
             };
             rdc();
           }}
@@ -137,15 +155,19 @@ export default function Page() {
 
         <Button
           color="red"
+          loading={DataLoading}
           appearance="primary"
           onClick={() => {
             const dac = async () => {
+              setDataLoading(!false);
               try {
                 const res1 = await API.delete("/attributes");
                 updateList();
               } catch (err) {
                 console.log(err);
+                setDataLoading(false);
               }
+              setDataLoading(false);
             };
             dac();
           }}
@@ -160,9 +182,8 @@ export default function Page() {
         data={data}
         autoHeight
         bordered
-        // onRowClick={data => {
-        //   console.log(data);
-        // }}
+        loading={DataLoading}
+        cellBordered
       >
         <Column flexGrow={3} align="center" fixed>
           <HeaderCell>Name</HeaderCell>
@@ -224,7 +245,7 @@ export default function Page() {
             className="my-2 mt-10"
             appearance="primary"
             onClick={handleSubmit}
-            //loading={loading}
+            loading={DataLoading}
           >
             Submit
           </Button>

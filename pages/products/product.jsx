@@ -37,6 +37,8 @@ let attribMap = {};
 let model = { name: StringType().isRequired("This field is required.") };
 
 export default function Page() {
+  const [DataLoading, setDataLoading] = useState(false);
+
   const formRef = React.useRef();
   const [formError, setFormError] = React.useState({});
   const [formValue, setFormValue] = React.useState({});
@@ -56,8 +58,8 @@ export default function Page() {
       return;
     }
     try {
-      //const res1 = await API.post("/products", formValue);
       let assignedAttributes = [];
+      setDataLoading(true);
       for (const v in formValue) {
         if (v != "name") {
           const res1 = await API.post("/assigned_attributes", {
@@ -74,8 +76,10 @@ export default function Page() {
         assignedAttributes,
       });
       updateList();
+      setDataLoading(false);
       handleClose();
     } catch (err) {
+      setDataLoading(false);
       //console.error(err);
     }
   };
@@ -91,6 +95,7 @@ export default function Page() {
   useEffect(() => {
     setFormValue({});
     attribMap = {};
+    model = { name: StringType().isRequired("This field is required.") };
     setTimeout(() => {
       if (SelectedType) {
         for (const a of ptypeMap[SelectedType].attributes) {
@@ -145,12 +150,15 @@ export default function Page() {
     }
   };
   const updatePTypeList = async () => {
+    setDataLoading(true);
     try {
       const res = await API.get("/product_types");
       setProductTypeList(res.data);
     } catch (err) {
+      setDataLoading(false);
       //console.log(err);
     }
+    setDataLoading(false);
   };
   useEffect(() => {
     updateList();
@@ -177,12 +185,15 @@ export default function Page() {
           appearance="primary"
           onClick={() => {
             const dac = async () => {
+              setDataLoading(true);
               try {
                 const res1 = await API.delete("/products");
                 updateList();
               } catch (err) {
+                setDataLoading(false);
                 //console.log(err);
               }
+              setDataLoading(false);
             };
             dac();
           }}
@@ -194,6 +205,8 @@ export default function Page() {
       <br />
       <Table
         className="mx-4"
+        loading={DataLoading}
+        cellBordered
         //height={600}
         bordered
         data={data.map((p) => ({
@@ -201,11 +214,11 @@ export default function Page() {
           children: p.assignedAttributes.map((a) => {
             let v = a.attributeValue;
             switch (a.attribute.type) {
-              case 'BOOL':
-                v=v?'True':'False';
+              case "BOOL":
+                v = v ? "True" : "False";
                 break;
-              case 'DATE':
-                v=new Date(v).toLocaleDateString();
+              case "DATE":
+                v = new Date(v).toLocaleDateString();
                 break;
               default:
                 break;
@@ -220,8 +233,11 @@ export default function Page() {
         }))}
         isTree
         rowKey="_id"
+        // onRowClick={data => {
+        //   console.log(data);
+        // }}
       >
-        <Column flexGrow={3} fixed>
+        <Column flexGrow={2} fixed>
           <HeaderCell>Name</HeaderCell>
           <Cell dataKey="name" />
         </Column>
@@ -335,7 +351,7 @@ export default function Page() {
             appearance="primary"
             onClick={handleSubmit}
             disabled={!SelectedType}
-            //loading={loading}
+            loading={DataLoading}
           >
             Submit
           </Button>

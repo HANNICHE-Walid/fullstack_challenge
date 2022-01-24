@@ -31,6 +31,8 @@ const InputField = React.forwardRef((props, ref) => {
 });
 
 export default function Page() {
+  const [DataLoading, setDataLoading] = useState(false);
+
   const formRef = React.useRef();
   const [formError, setFormError] = React.useState({});
   const [formValue, setFormValue] = React.useState({
@@ -57,14 +59,17 @@ export default function Page() {
       return;
     }
     try {
+      setDataLoading(!false);
       const res1 = await API.post("/product_types", formValue);
 
       updatePTypeList();
 
+      setDataLoading(false);
       handleClose();
     } catch (err) {
       //console.error(err);
     }
+    setDataLoading(false);
   };
 
   const [AtributeList, setAtributeList] = useState([]);
@@ -85,6 +90,7 @@ export default function Page() {
   console.log(data);
 
   const updateList = async () => {
+    setDataLoading(!false);
     try {
       const res = await API.get("/attributes");
       console.log(res.data);
@@ -92,8 +98,10 @@ export default function Page() {
     } catch (err) {
       //console.log(err);
     }
+    setDataLoading(false);
   };
   const updatePTypeList = async () => {
+    setDataLoading(!false);
     try {
       const res = await API.get("/product_types");
       console.log(res.data);
@@ -101,6 +109,7 @@ export default function Page() {
     } catch (err) {
       //console.log(err);
     }
+    setDataLoading(false);
   };
   useEffect(() => {
     updateList();
@@ -120,19 +129,24 @@ export default function Page() {
 
       <h1>Product types</h1>
       <ButtonToolbar className="mx-2">
-        <Button color="green" appearance="primary" onClick={handleOpen}>
+        <Button
+          loading={DataLoading} color="green" appearance="primary" onClick={handleOpen}>
           Create product type
         </Button>
         <Button
+          loading={DataLoading}
           color="red"
           appearance="primary"
           onClick={() => {
             const dac = async () => {
+              setDataLoading(!false);
               try {
                 const res1 = await API.delete("/product_types");
 
                 updatePTypeList();
+                setDataLoading(false);
               } catch (err) {
+                setDataLoading(false);
                 console.log(err);
               }
             };
@@ -146,6 +160,7 @@ export default function Page() {
       <br />
       <Table
         className="mx-4"
+        loading={DataLoading}
         //height={600}
         bordered
         data={data.map((p) => ({
@@ -154,6 +169,8 @@ export default function Page() {
         }))}
         isTree
         rowKey="_id"
+        loading={DataLoading}
+        cellBordered
       >
         <Column flexGrow={3} fixed>
           <HeaderCell>Name</HeaderCell>
@@ -222,7 +239,7 @@ export default function Page() {
             className="my-2 mt-10"
             appearance="primary"
             onClick={handleSubmit}
-            //loading={loading}
+            loading={DataLoading}
           >
             Submit
           </Button>

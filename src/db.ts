@@ -1,11 +1,19 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import { databaseUrl, databaseHost, databaseName, databasePort } from "./config";
+import {
+  databaseUrl,
+  databaseHost,
+  databaseName,
+  databasePort,
+} from "./config";
 
 // Build the connection string
-let dbURI = databaseUrl || `mongodb://${databaseHost}:${databasePort}/${databaseName}`;
+let dbURI =
+  databaseUrl || `mongodb://${databaseHost}:${databasePort}/${databaseName}`;
 let done = false;
-console.log( databaseUrl || `mongodb://${databaseHost}:${databasePort}/${databaseName}`);
+console.log(
+  databaseUrl || `mongodb://${databaseHost}:${databasePort}/${databaseName}`
+);
 mongoose
   .connect(dbURI)
   .then(() => {
