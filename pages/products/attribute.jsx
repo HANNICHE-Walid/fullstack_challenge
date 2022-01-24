@@ -217,9 +217,9 @@ export default function Page() {
             last
             ellipsis
             boundaryLinks
-            maxButtons={5}
+            maxButtons={3}
             size="xs"
-            layout={["limit", "|", "pager", "skip"]}
+            layout={["limit", "|", "pager"]}
             total={AtributeList.length}
             limitOptions={[5, 10, 20, 50]}
             limit={limit}

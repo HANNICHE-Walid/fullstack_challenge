@@ -8,6 +8,7 @@ import { Table, Column, HeaderCell, Cell } from "rsuite-table";
 import {
   Button,
   ButtonToolbar,
+  IconButton,
   Modal,
   Form,
   Schema,
@@ -16,6 +17,7 @@ import {
   Toggle,
   Pagination,
 } from "rsuite";
+import { Icon } from "@iconify/react";
 import s from "../../styles/Navbar.module.css";
 
 const { StringType, DateType, BooleanType } = Schema.Types;
@@ -54,8 +56,7 @@ export default function Page() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (edit) => {
     //console.log(attribMap)
     if (!formRef.current.check()) {
       console.error("Form Error", formError);
@@ -66,19 +67,29 @@ export default function Page() {
       setDataLoading(true);
       for (const v in formValue) {
         if (v != "name") {
-          const res1 = await API.post("/assigned_attributes", {
-            attribute: attribMap[v],
-            attributeValue: formValue[v],
-          });
-          assignedAttributes.push(res1.data);
+          if (edit) {
+            await API.put("/assigned_attributes", {
+              attribute: attribMap[v].att_id,
+              attributeValue: formValue[v],
+            },{params:{id:attribMap[v].aa_id}});
+
+          } else {
+            const res1 = await API.post("/assigned_attributes", {
+              attribute: attribMap[v],
+              attributeValue: formValue[v],
+            });
+            assignedAttributes.push(res1.data);
+          }
         }
       }
 
-      await API.post("/products", {
-        name: formValue["name"],
-        productType: SelectedType,
-        assignedAttributes,
-      });
+      if (!edit){
+        await API.post("/products", {
+          name: formValue["name"],
+          productType: SelectedType,
+          assignedAttributes,
+        });
+      }
       updateList();
       setDataLoading(false);
       handleClose();
@@ -88,7 +99,7 @@ export default function Page() {
     }
   };
   // console.log("fv", formValue);
-
+  const [EditType, setEditType] = useState(null);
   const [ProductList, setProductList] = useState([]);
   const [ProductTypeList, setProductTypeList] = useState([]);
   const [SelectedType, setSelectedType] = useState(null);
@@ -147,7 +158,7 @@ export default function Page() {
   const updateList = async () => {
     try {
       const res = await API.get("/products");
-      console.log(res.data);
+      //console.log(res.data);
       setProductList(res.data);
     } catch (err) {
       //console.log(err);
@@ -221,6 +232,7 @@ export default function Page() {
         <br />
         <Table
           autoHeight
+          rowHeight={60}
           className="mx-4  bg-white"
           loading={DataLoading}
           cellBordered
@@ -250,9 +262,9 @@ export default function Page() {
           }))}
           isTree
           rowKey="_id"
-          onRowClick={(data) => {
-            console.log(data);
-          }}
+          // onRowClick={(data) => {
+          //   console.log(data);
+          // }}
         >
           <Column flexGrow={2} fixed>
             <HeaderCell>Name</HeaderCell>
@@ -268,6 +280,56 @@ export default function Page() {
             <HeaderCell>Value</HeaderCell>
             <Cell dataKey="value" />
           </Column>
+
+          <Column flexGrow={1} align="center" fixed>
+            <HeaderCell>Edit</HeaderCell>
+            <Cell>
+              {(data) => {
+                if (data.children) {
+                  return (
+                    <IconButton
+                      circle
+                      appearance="ghost"
+                      onClick={(e) => {
+                        let fv = {};
+                        setEditType(data.productType._id);
+                        for (const att of data.children) {
+                          //console.log(att.attributeValue);
+                          switch (att.attribute.type) {
+                            case "DATE":
+                              fv[att.attribute.name] = new Date(
+                                att.attributeValue
+                              );
+
+                              break;
+                            // case "BOOL":
+                            //   fv[att.attribute.name] =
+                            //     att.attributeValue == "True";
+
+                            //   break;
+
+                            default:
+                              fv[att.attribute.name] = att.attributeValue;
+                              break;
+                          }
+                          attribMap[att.attribute.name] = {
+                            aa_id: att._id,
+                            att_id: att.attribute._id,
+                          };
+                        }
+                        fv.name = data.name;
+                        //console.log("fvb", fv);
+                        setFormValue(fv);
+                        handleOpen({ id: data._id });
+                      }}
+                      icon={<Icon icon="cbx:bxs-edit" />}
+                    />
+                  );
+                }
+                return <></>;
+              }}
+            </Cell>
+          </Column>
         </Table>
 
         <br />
@@ -279,9 +341,9 @@ export default function Page() {
             last
             ellipsis
             boundaryLinks
-            maxButtons={5}
+            maxButtons={3}
             size="xs"
-            layout={["limit", "|", "pager", "skip"]}
+            layout={["limit", "|", "pager"]}
             total={ProductTypeList.length}
             limitOptions={[5, 10, 20, 50]}
             limit={limit}
@@ -294,19 +356,25 @@ export default function Page() {
       <Modal open={open} size={"sm"} onClose={handleClose}>
         <Modal.Header>
           <Modal.Title className="text-xl text-cla-blue text-center font-semibold mb-4">
-            Create Product
+            {open.id ? "Edit" : "Create"} Product
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Product Type:
-          <SelectPicker
-            data={ProductTypeList.map((p) => ({ value: p._id, label: p.name }))}
-            searchable={true}
-            block
-            value={SelectedType}
-            onChange={setSelectedType}
-            className="py-2"
-          />
+          {!open.id && "Product Type:"}
+
+          {!open.id && (
+            <SelectPicker
+              data={ProductTypeList.map((p) => ({
+                value: p._id,
+                label: p.name,
+              }))}
+              searchable={true}
+              block
+              value={SelectedType}
+              onChange={setSelectedType}
+              className="py-2"
+            />
+          )}
           <Form
             layout="horizontal"
             fluid
@@ -316,52 +384,65 @@ export default function Page() {
             formValue={formValue}
             model={Schema.Model(model)}
           >
-            <InputField ref={formRef} name={"name"} label={"Product Name :"} />
-            {SelectedType &&
-              ptypeMap[SelectedType].attributes.map((a) => {
-                attribMap[a.name] = a._id;
-                switch (a.type) {
-                  case "DATE":
-                    return (
-                      <InputField
-                        key={a._id}
-                        ref={formRef}
-                        accepter={DatePicker}
-                        name={a.name}
-                        label={a.name + " :"}
-                      />
-                    );
-                  case "BOOL":
-                    return (
-                      <InputField
-                        key={a._id}
-                        ref={formRef}
-                        accepter={Toggle}
-                        name={a.name}
-                        size="sm"
-                        label={a.name + " :"}
-                      />
-                    );
-                  case "STRING":
-                    return (
-                      <InputField
-                        key={a._id}
-                        ref={formRef}
-                        name={a.name}
-                        label={a.name + " :"}
-                      />
-                    );
+            {open.id ? (
+              <h3 className=" text-blue-600">{formValue.name}</h3>
+            ) : (
+              <InputField
+                ref={formRef}
+                readon
+                name={"name"}
+                label={"Product Name :"}
+              />
+            )}
+            {(SelectedType || EditType) &&
+              ptypeMap[EditType ? EditType : SelectedType].attributes.map(
+                (a) => {
+                  if (!open.id) attribMap[a.name] = a._id;
+                  switch (a.type) {
+                    case "DATE":
+                      return (
+                        <InputField
+                          key={a._id}
+                          ref={formRef}
+                          accepter={DatePicker}
+                          name={a.name}
+                          label={a.name + " :"}
+                        />
+                      );
+                    case "BOOL":
+                      return (
+                        <InputField
+                          key={a._id}
+                          ref={formRef}
+                          accepter={Toggle}
+                          name={a.name}
+                          size="sm"
+                          label={a.name + " :"}
+                        />
+                      );
+                    case "STRING":
+                      return (
+                        <InputField
+                          key={a._id}
+                          ref={formRef}
+                          name={a.name}
+                          label={a.name + " :"}
+                        />
+                      );
 
-                  default:
-                    break;
+                    default:
+                      return <></>;
+                  }
                 }
-              })}
+              )}
           </Form>
           <Button
-            className="my-2 mt-10"
+            className="my-2 mt-10 float-right"
             appearance="primary"
-            onClick={handleSubmit}
-            disabled={!SelectedType}
+            onClick={() => {
+              handleSubmit(open.id);
+            }}
+            disabled={!(SelectedType || EditType)}
             loading={DataLoading}
           >
             Submit
