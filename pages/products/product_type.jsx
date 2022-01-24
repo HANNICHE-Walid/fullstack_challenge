@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 import API from "../../src/api";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import {
   TagPicker,
   Pagination,
 } from "rsuite";
+import s from "../../styles/Navbar.module.css";
 
 const InputField = React.forwardRef((props, ref) => {
   const { name, label, accepter, ...rest } = props;
@@ -125,9 +127,20 @@ export default function Page() {
         <title>Product types</title>
       </Head>
 
-      <Link href="/">
-        <a>Back to home</a>
-      </Link>
+      <div className={s.nav}>
+        <div className="flex items-center flex-1">
+          <Link href="/">
+            <span className={s.logo + " py-2 mx-4 px-4"}>
+              <Image
+                src="/vercel.svg"
+                alt="Vercel Logo"
+                width={72}
+                height={16}
+              />
+            </span>
+          </Link>
+        </div>
+      </div>
 
       <h1>Product types</h1>
       <ButtonToolbar className="mx-2">
@@ -165,9 +178,9 @@ export default function Page() {
       <br />
       <br />
       <Table
-        className="mx-4"
+        className="mx-4 bg-white"
         loading={DataLoading}
-        //height={600}
+        // height={500}
         bordered
         data={data.map((p) => ({
           ...p,
@@ -177,9 +190,14 @@ export default function Page() {
         rowKey="_id"
         cellBordered
       >
-        <Column flexGrow={3} fixed>
+        <Column flexGrow={2} fixed>
           <HeaderCell>Name</HeaderCell>
           <Cell dataKey="name" />
+        </Column>
+
+        <Column flexGrow={1} align="center" fixed>
+          <HeaderCell>Date</HeaderCell>
+          <Cell dataKey="createdAt" />
         </Column>
 
         <Column flexGrow={1} align="center" fixed>

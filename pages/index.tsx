@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { Button } from "rsuite";
@@ -47,11 +48,17 @@ const Home: NextPage = () => {
         </p> */}
 
         <div className={styles.grid}>
-          <Link href="/products/attribute">
+          <Button className={styles.card}>
+            <Link href="/products/attribute">
+              <h2>Attributes &rarr;</h2>
+            </Link>
+          </Button>
+
+          {/* <Link href="/products/attribute">
             <a className={styles.card}>
               <h2>Attributes &rarr;</h2>
             </a>
-          </Link>
+          </Link> */}
 
           <Button
             title={AvialableData.attrib ? undefined : "Create Attributes first"}
@@ -90,9 +97,6 @@ const Home: NextPage = () => {
           className="text-purple-900 py-2"
         >
           Powered by W{" "}
-          {/*<span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-  </span>*/}
         </a>
       </footer>
     </div>

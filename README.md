@@ -35,3 +35,4 @@ or create a PR to automaticaly deploy your edits on a new page online
 - backend data validation
 - improve ui
 - remove the attribue display table move create attribute to product_type page
+- recursive deletes from db

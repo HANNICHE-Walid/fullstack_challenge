@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 import API from "../../src/api";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import {
   SelectPicker,
   Pagination,
 } from "rsuite";
+import s from "../../styles/Navbar.module.css";
 
 const attributeTypes = ["DATE", "BOOL", "STRING"].map((a) => ({
   value: a,
@@ -115,9 +117,20 @@ export default function Page() {
         <title>Attributes</title>
       </Head>
 
-      <Link href="/">
-        <a>Back to home</a>
-      </Link>
+      <div className={s.nav}>
+        <div className="flex items-center flex-1">
+          <Link href="/">
+            <span className={s.logo + " py-2 mx-4 px-4"}>
+              <Image
+                src="/vercel.svg"
+                alt="Vercel Logo"
+                width={72}
+                height={16}
+              />
+            </span>
+          </Link>
+        </div>
+      </div>
 
       <h1>Attributes</h1>
       <ButtonToolbar className="mx-2">
@@ -178,7 +191,7 @@ export default function Page() {
       <br />
       <Table
         //height={400}
-        className="mx-4"
+        className="mx-4 bg-white"
         data={data}
         autoHeight
         bordered

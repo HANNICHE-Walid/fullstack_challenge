@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 import API from "../../src/api";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -15,6 +16,7 @@ import {
   Toggle,
   Pagination,
 } from "rsuite";
+import s from "../../styles/Navbar.module.css";
 
 const { StringType, DateType, BooleanType } = Schema.Types;
 const InputField = React.forwardRef((props, ref) => {
@@ -173,9 +175,20 @@ export default function Page() {
         <title>Products</title>
       </Head>
 
-      <Link href="/">
-        <a>Back to home</a>
-      </Link>
+      <div className={s.nav}>
+        <div className="flex items-center flex-1">
+          <Link href="/">
+            <span className={s.logo + " py-2 mx-4 px-4"}>
+              <Image
+                src="/vercel.svg"
+                alt="Vercel Logo"
+                width={72}
+                height={16}
+              />
+            </span>
+          </Link>
+        </div>
+      </div>
 
       <h1>Products</h1>
       <ButtonToolbar className="mx-2">
@@ -206,10 +219,11 @@ export default function Page() {
       <br />
       <br />
       <Table
-        className="mx-4"
+        autoHeight
+        className="mx-4  bg-white"
         loading={DataLoading}
         cellBordered
-        //height={600}
+        // height={500}
         bordered
         data={data.map((p) => ({
           ...p,
@@ -227,17 +241,17 @@ export default function Page() {
             }
             return {
               ...a,
-              //_id: p._id + a._id,
               name: a.attribute.name,
               value: v,
+              //type:a.attribute.type
             };
           }),
         }))}
         isTree
         rowKey="_id"
-        // onRowClick={data => {
-        //   console.log(data);
-        // }}
+        onRowClick={(data) => {
+          console.log(data);
+        }}
       >
         <Column flexGrow={2} fixed>
           <HeaderCell>Name</HeaderCell>
@@ -324,12 +338,6 @@ export default function Page() {
                         accepter={Toggle}
                         name={a.name}
                         size="sm"
-                        // value={formValue[a.name]}
-                        // onChange={(v) => {
-                        //   let fv = {...formValue};
-                        //   fv[a.name] = v;
-                        //   setFormValue(fv);
-                        // }}
                         label={a.name + " :"}
                       />
                     );
