@@ -13,7 +13,18 @@ export default async function handler(
       res.status(200).json({ message: "success" });
       break;
     case "GET":
-      let prod = await models.ProductModel.find({}).exec();
+      let prod = await models.ProductModel.find({})
+        .populate({
+          path: "productType",
+          select: "name _id",
+          strictPopulate: false,
+        })
+        .populate({
+          path: "assignedAttributes",
+          strictPopulate: false,
+          populate: { path: "attribute" },
+        })
+        .exec();
       res.status(200).json(prod);
       break;
     default:

@@ -37,7 +37,6 @@ export default async function handler(
         }
         res.status(200).json({ message: "success" });
       } else {
-        Math.round(Math.random() * 3);
         await models.AttributeModel.create(req.body);
         res.status(200).json({ message: "success" });
       }

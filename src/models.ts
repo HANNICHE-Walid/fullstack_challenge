@@ -32,6 +32,7 @@ const attributeSchema = new Schema({
   name: {
     type: Schema.Types.String,
     required: true,
+    unique: true,
   },
 });
 
@@ -76,7 +77,7 @@ const productSchema = new Schema(
       ref: "ProductType",
     },
     assignedAttributes: {
-      type:[
+      type: [
         {
           type: Schema.Types.ObjectId,
           ref: "AssignedAttribute",
