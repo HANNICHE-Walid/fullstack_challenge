@@ -14,7 +14,7 @@ export default async function handler(
       break;
     case "POST":
       let n = await models.AssignedAttributeModel.create(req.body);
-      res.status(200).json(n);
+      res.status(200).json(n._id);
       break;
     case "PUT":
       let a = await models.AssignedAttributeModel.findByIdAndUpdate(

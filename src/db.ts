@@ -1,8 +1,8 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import { databaseHost, databaseName, databasePort } from "./config";
+import { databaseUrl, databaseHost, databaseName, databasePort } from "./config";
 // Build the connection string
-let dbURI = `mongodb://${databaseHost}:${databasePort}/${databaseName}`;
+let dbURI = databaseUrl || `mongodb://${databaseHost}:${databasePort}/${databaseName}`;
 let done = false;
 
 mongoose

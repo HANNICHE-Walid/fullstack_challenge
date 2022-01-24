@@ -34,7 +34,7 @@ const InputField = React.forwardRef((props, ref) => {
 });
 let ptypeMap = {};
 let attribMap = {};
-let model = {};
+let model = { name: StringType().isRequired("This field is required.") };
 
 export default function Page() {
   const formRef = React.useRef();
@@ -57,7 +57,22 @@ export default function Page() {
     }
     try {
       //const res1 = await API.post("/products", formValue);
+      let assignedAttributes = [];
+      for (const v in formValue) {
+        if (v != "name") {
+          const res1 = await API.post("/assigned_attributes", {
+            attribute: attribMap[v],
+            attributeValue: formValue[v],
+          });
+          assignedAttributes.push(res1.data);
+        }
+      }
 
+      await API.post("/products", {
+        name: formValue["name"],
+        productType: SelectedType,
+        assignedAttributes,
+      });
       updateList();
       handleClose();
     } catch (err) {
@@ -163,8 +178,7 @@ export default function Page() {
           onClick={() => {
             const dac = async () => {
               try {
-                const res1 = await API.delete("/product_types");
-
+                const res1 = await API.delete("/products");
                 updateList();
               } catch (err) {
                 //console.log(err);
@@ -184,10 +198,25 @@ export default function Page() {
         bordered
         data={data.map((p) => ({
           ...p,
-          children: p.assignedAttributes.map((a) => ({
-            ...a,
-            _id: p._id + a._id,
-          })),
+          children: p.assignedAttributes.map((a) => {
+            let v = a.attributeValue;
+            switch (a.attribute.type) {
+              case 'BOOL':
+                v=v?'True':'False';
+                break;
+              case 'DATE':
+                v=new Date(v).toLocaleDateString();
+                break;
+              default:
+                break;
+            }
+            return {
+              ...a,
+              //_id: p._id + a._id,
+              name: a.attribute.name,
+              value: v,
+            };
+          }),
         }))}
         isTree
         rowKey="_id"
@@ -199,6 +228,11 @@ export default function Page() {
 
         <Column flexGrow={1} align="center" fixed>
           <HeaderCell>Type</HeaderCell>
+          <Cell dataKey="productType.name" />
+        </Column>
+
+        <Column flexGrow={1} align="center" fixed>
+          <HeaderCell>Value</HeaderCell>
           <Cell dataKey="value" />
         </Column>
       </Table>
@@ -238,6 +272,7 @@ export default function Page() {
             block
             value={SelectedType}
             onChange={setSelectedType}
+            className="py-2"
           />
           <Form
             layout="horizontal"
@@ -248,6 +283,7 @@ export default function Page() {
             formValue={formValue}
             model={Schema.Model(model)}
           >
+            <InputField ref={formRef} name={"name"} label={"Product Name :"} />
             {SelectedType &&
               ptypeMap[SelectedType].attributes.map((a) => {
                 attribMap[a.name] = a._id;
@@ -255,6 +291,7 @@ export default function Page() {
                   case "DATE":
                     return (
                       <InputField
+                        key={a._id}
                         ref={formRef}
                         accepter={DatePicker}
                         name={a.name}
@@ -264,6 +301,7 @@ export default function Page() {
                   case "BOOL":
                     return (
                       <InputField
+                        key={a._id}
                         ref={formRef}
                         accepter={Toggle}
                         name={a.name}
@@ -280,6 +318,7 @@ export default function Page() {
                   case "STRING":
                     return (
                       <InputField
+                        key={a._id}
                         ref={formRef}
                         name={a.name}
                         label={a.name + " :"}
