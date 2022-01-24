@@ -30,6 +30,8 @@ const InputField = React.forwardRef((props, ref) => {
   );
 });
 
+InputField.displayName ='InputField';
+
 export default function Page() {
   const [DataLoading, setDataLoading] = useState(false);
 
@@ -169,7 +171,6 @@ export default function Page() {
         }))}
         isTree
         rowKey="_id"
-        loading={DataLoading}
         cellBordered
       >
         <Column flexGrow={3} fixed>
